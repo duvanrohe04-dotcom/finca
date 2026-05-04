@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Inventario – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">📦 Inventario</h1>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="showTab('bultos')">📦 Bultos ({{ bultos|length }})</button>
+    <button class="tab-btn" onclick="showTab('drogas')">💊 Medicamentos ({{ drogas|length }})</button>
+</div>
+
+<!-- BULTOS -->
+<div id="bultos" class="tab-content active">
+    <div class="section-header">
+        <div class="total-badge">Total: <strong>${{ "{:,.0f}".format(total_bultos) }}</strong></div>
+        <a href="{{ url_for('inventario.nuevo_bulto') }}" class="btn-primary">+ Agregar Bulto</a>
+    </div>
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr><th>Nombre</th><th>Marca</th><th>Unidad</th><th>Precio Unit.</th><th>Cantidad</th><th>Total</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for b in bultos %}
+                <tr>
+                    <td><strong>{{ b.nombre }}</strong></td>
+                    <td>{{ b.marca or '—' }}</td>
+                    <td>{{ b.unidad }}</td>
+                    <td>${{ "{:,.0f}".format(b.precio_unitario) }}</td>
+                    <td>{{ b.cantidad }}</td>
+                    <td><strong class="text-green">${{ "{:,.0f}".format(b.total) }}</strong></td>
+                    <td class="actions">
+                        <a href="{{ url_for('inventario.editar_bulto', id=b.id) }}" class="btn-edit">✏️</a>
+                        <form method="POST" action="{{ url_for('inventario.eliminar_bulto', id=b.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                            <button type="submit" class="btn-delete">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty">No hay bultos en inventario</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if bultos %}
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="5"><strong>TOTAL BULTOS</strong></td>
+                    <td colspan="2"><strong>${{ "{:,.0f}".format(total_bultos) }}</strong></td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</div>
+
+<!-- DROGAS -->
+<div id="drogas" class="tab-content">
+    <div class="section-header">
+        <div class="total-badge">Total: <strong>${{ "{:,.0f}".format(total_drogas) }}</strong></div>
+        <a href="{{ url_for('inventario.nueva_droga') }}" class="btn-primary">+ Agregar Medicamento</a>
+    </div>
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr><th>Nombre</th><th>Marca</th><th>Unidad</th><th>Precio Unit.</th><th>Cantidad</th><th>Total</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for d in drogas %}
+                <tr>
+                    <td><strong>{{ d.nombre }}</strong></td>
+                    <td>{{ d.marca or '—' }}</td>
+                    <td>{{ d.unidad }}</td>
+                    <td>${{ "{:,.0f}".format(d.precio_unitario) }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td><strong class="text-green">${{ "{:,.0f}".format(d.total) }}</strong></td>
+                    <td class="actions">
+                        <a href="{{ url_for('inventario.editar_droga', id=d.id) }}" class="btn-edit">✏️</a>
+                        <form method="POST" action="{{ url_for('inventario.eliminar_droga', id=d.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                            <button type="submit" class="btn-delete">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty">No hay medicamentos en inventario</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if drogas %}
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="5"><strong>TOTAL MEDICAMENTOS</strong></td>
+                    <td colspan="2"><strong>${{ "{:,.0f}".format(total_drogas) }}</strong></td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</div>
+{% endblock %}

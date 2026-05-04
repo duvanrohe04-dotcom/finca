@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Ganado – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">🐄 Ganado & Terneros</h1>
+    <a href="{{ url_for('ganado.nuevo') }}" class="btn-primary">+ Registrar Animal</a>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="showTab('adultos')">Ganado Adulto ({{ adultos|length }})</button>
+    <button class="tab-btn" onclick="showTab('terneros')">Terneros ({{ terneros|length }})</button>
+</div>
+
+<div id="adultos" class="tab-content active">
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th><th>Nombre</th><th>Raza</th><th>Sexo</th><th>F. Nacimiento</th><th>Observaciones</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in adultos %}
+                <tr>
+                    <td><span class="badge">{{ a.numero or '—' }}</span></td>
+                    <td><strong>{{ a.nombre }}</strong></td>
+                    <td>{{ a.raza or '—' }}</td>
+                    <td>{{ a.sexo or '—' }}</td>
+                    <td>{{ a.fecha_nacimiento.strftime('%d/%m/%Y') if a.fecha_nacimiento else '—' }}</td>
+                    <td class="obs-cell">{{ a.observaciones or '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('ganado.editar', id=a.id) }}" class="btn-edit">✏️</a>
+                        <form method="POST" action="{{ url_for('ganado.eliminar', id=a.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar este animal?')">
+                            <button type="submit" class="btn-delete">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty">No hay ganado adulto registrado</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="terneros" class="tab-content">
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>#</th><th>Nombre</th><th>Raza</th><th>Sexo</th><th>F. Nacimiento</th><th>Madre</th><th>Padre</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in terneros %}
+                <tr>
+                    <td><span class="badge">{{ t.numero or '—' }}</span></td>
+                    <td><strong>{{ t.nombre }}</strong></td>
+                    <td>{{ t.raza or '—' }}</td>
+                    <td>{{ t.sexo or '—' }}</td>
+                    <td>{{ t.fecha_nacimiento.strftime('%d/%m/%Y') if t.fecha_nacimiento else '—' }}</td>
+                    <td>{{ t.madre.nombre if t.madre else '—' }}</td>
+                    <td>{{ t.padre.nombre if t.padre else '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('ganado.editar', id=t.id) }}" class="btn-edit">✏️</a>
+                        <form method="POST" action="{{ url_for('ganado.eliminar', id=t.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar este ternero?')">
+                            <button type="submit" class="btn-delete">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="empty">No hay terneros registrados</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

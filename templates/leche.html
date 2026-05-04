@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Leche – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">🥛 Registro de Leche</h1>
+    <a href="{{ url_for('leche.nuevo') }}" class="btn-primary">+ Nuevo Registro</a>
+</div>
+
+<div class="stats-row">
+    <div class="mini-stat">
+        <div class="mini-stat-value">{{ "%.1f"|format(total_litros) }}L</div>
+        <div class="mini-stat-label">Total Litros</div>
+    </div>
+    <div class="mini-stat">
+        <div class="mini-stat-value">${{ "{:,.0f}".format(total_dinero) }}</div>
+        <div class="mini-stat-label">Total Ingresos</div>
+    </div>
+    <div class="mini-stat">
+        <div class="mini-stat-value">{{ registros|length }}</div>
+        <div class="mini-stat-label">Registros</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr><th>Fecha</th><th>Litros Mañana</th><th>Litros Tarde</th><th>Total Litros</th><th>Precio/L</th><th>Total $</th><th>Observaciones</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+            {% for r in registros %}
+            <tr>
+                <td>{{ r.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ "%.1f"|format(r.litros_manana) }}L</td>
+                <td>{{ "%.1f"|format(r.litros_tarde) }}L</td>
+                <td><strong>{{ "%.1f"|format(r.total_litros) }}L</strong></td>
+                <td>${{ "{:,.0f}".format(r.precio_litro) }}</td>
+                <td><strong class="text-green">${{ "{:,.0f}".format(r.total_dinero) }}</strong></td>
+                <td class="obs-cell">{{ r.observaciones or '—' }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('leche.editar', id=r.id) }}" class="btn-edit">✏️</a>
+                    <form method="POST" action="{{ url_for('leche.eliminar', id=r.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar registro?')">
+                        <button type="submit" class="btn-delete">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="empty">No hay registros de leche</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Obreros – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">👷 Obreros</h1>
+    <a href="{{ url_for('obreros.nuevo') }}" class="btn-primary">+ Agregar Obrero</a>
+</div>
+
+<div class="summary-bar">
+    <div class="summary-item">
+        <span class="summary-label">Total Nómina:</span>
+        <span class="summary-value">${{ "{:,.0f}".format(total_nomina) }}</span>
+    </div>
+</div>
+
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nombre</th><th>Cédula</th><th>Cargo</th><th>Precio/Día</th><th>Días</th><th>Total</th><th>Estado</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in obreros %}
+            <tr>
+                <td><strong>{{ o.nombre }}</strong></td>
+                <td>{{ o.cedula or '—' }}</td>
+                <td>{{ o.cargo or '—' }}</td>
+                <td>${{ "{:,.0f}".format(o.precio_dia) }}</td>
+                <td>{{ o.dias_trabajados }}</td>
+                <td><strong>${{ "{:,.0f}".format(o.total_pago) }}</strong></td>
+                <td><span class="status-badge {{ 'active' if o.activo else 'inactive' }}">{{ 'Activo' if o.activo else 'Inactivo' }}</span></td>
+                <td class="actions">
+                    <a href="{{ url_for('obreros.editar', id=o.id) }}" class="btn-edit">✏️</a>
+                    <form method="POST" action="{{ url_for('obreros.eliminar', id=o.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar este obrero?')">
+                        <button type="submit" class="btn-delete">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="empty">No hay obreros registrados</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

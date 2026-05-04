@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Configuración – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">⚙️ Configuración</h1>
+</div>
+
+<div class="config-grid">
+    <!-- Cambiar Datos Personales -->
+    <div class="form-card">
+        <h2 class="card-title">👤 Datos del Administrador</h2>
+        <form method="POST">
+            <input type="hidden" name="accion" value="cambiar_nombre">
+            <div class="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombre" value="{{ current_user.nombre }}" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre de Usuario</label>
+                <input type="text" name="username" value="{{ current_user.username }}" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">💾 Guardar Datos</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Cambiar Contraseña -->
+    <div class="form-card">
+        <h2 class="card-title">🔒 Cambiar Contraseña</h2>
+        <form method="POST">
+            <input type="hidden" name="accion" value="cambiar_password">
+            <div class="form-group">
+                <label>Contraseña Actual</label>
+                <input type="password" name="password_actual" required placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Nueva Contraseña</label>
+                <input type="password" name="password_nuevo" required placeholder="Mínimo 6 caracteres">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Nueva Contraseña</label>
+                <input type="password" name="password_confirmar" required placeholder="Repite la contraseña">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">🔒 Cambiar Contraseña</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Info del Sistema -->
+    <div class="form-card info-card">
+        <h2 class="card-title">ℹ️ Información del Sistema</h2>
+        <div class="info-list">
+            <div class="info-item">
+                <span class="info-label">Usuario actual:</span>
+                <span class="info-value">{{ current_user.username }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Nombre:</span>
+                <span class="info-value">{{ current_user.nombre }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Rol:</span>
+                <span class="info-value">Administrador</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sistema:</span>
+                <span class="info-value">Finca Admin v1.0</span>
+            </div>
+        </div>
+
+        <div class="nav-links-config">
+            <h3>Módulos del Sistema</h3>
+            <a href="{{ url_for('ganado.index') }}" class="config-link">🐄 Gestionar Ganado</a>
+            <a href="{{ url_for('obreros.index') }}" class="config-link">👷 Gestionar Obreros</a>
+            <a href="{{ url_for('inventario.index') }}" class="config-link">📦 Gestionar Inventario</a>
+            <a href="{{ url_for('leche.index') }}" class="config-link">🥛 Registros de Leche</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

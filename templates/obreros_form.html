@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if obrero else 'Nuevo' }} Obrero – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">👷 {{ 'Editar Obrero' if obrero else 'Agregar Obrero' }}</h1>
+    <a href="{{ url_for('obreros.index') }}" class="btn-secondary">← Volver</a>
+</div>
+<div class="form-card">
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" name="nombre" value="{{ obrero.nombre if obrero else '' }}" required placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+                <label>Cédula</label>
+                <input type="text" name="cedula" value="{{ obrero.cedula if obrero else '' }}" placeholder="Número de cédula">
+            </div>
+            <div class="form-group">
+                <label>Cargo</label>
+                <input type="text" name="cargo" value="{{ obrero.cargo if obrero else '' }}" placeholder="Ej: Vaquero, Mayordomo">
+            </div>
+            <div class="form-group">
+                <label>Fecha de Inicio</label>
+                <input type="date" name="fecha_inicio" value="{{ obrero.fecha_inicio.strftime('%Y-%m-%d') if obrero and obrero.fecha_inicio else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Precio por Día ($)</label>
+                <input type="number" step="0.01" name="precio_dia" value="{{ obrero.precio_dia if obrero else 0 }}" min="0">
+            </div>
+            <div class="form-group">
+                <label>Días Trabajados</label>
+                <input type="number" name="dias_trabajados" value="{{ obrero.dias_trabajados if obrero else 0 }}" min="0">
+            </div>
+            {% if obrero %}
+            <div class="form-group">
+                <label>Estado</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" name="activo" id="activo" {{ 'checked' if obrero.activo }}>
+                    <label for="activo">Obrero activo</label>
+                </div>
+            </div>
+            {% endif %}
+            <div class="form-group full-width">
+                <label>Observaciones</label>
+                <textarea name="observaciones" rows="3" placeholder="Notas adicionales...">{{ obrero.observaciones if obrero else '' }}</textarea>
+            </div>
+        </div>
+        {% if obrero %}
+        <div class="total-preview">
+            <span>Total a pagar: <strong id="total-display">${{ "{:,.0f}".format(obrero.total_pago) }}</strong></span>
+        </div>
+        {% endif %}
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 {{ 'Actualizar' if obrero else 'Agregar' }}</button>
+            <a href="{{ url_for('obreros.index') }}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

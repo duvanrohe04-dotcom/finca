@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if animal else 'Nuevo' }} Animal – Finca Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">🐄 {{ 'Editar Animal' if animal else 'Registrar Animal' }}</h1>
+    <a href="{{ url_for('ganado.index') }}" class="btn-secondary">← Volver</a>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" name="nombre" value="{{ animal.nombre if animal else '' }}" required placeholder="Ej: Rosita">
+            </div>
+            <div class="form-group">
+                <label>Número / Arete</label>
+                <input type="text" name="numero" value="{{ animal.numero if animal else '' }}" placeholder="Ej: 001">
+            </div>
+            <div class="form-group">
+                <label>Tipo *</label>
+                <select name="tipo">
+                    <option value="adulto" {{ 'selected' if animal and animal.tipo == 'adulto' }}>Adulto</option>
+                    <option value="ternero" {{ 'selected' if animal and animal.tipo == 'ternero' }}>Ternero</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sexo</label>
+                <select name="sexo">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="hembra" {{ 'selected' if animal and animal.sexo == 'hembra' }}>Hembra</option>
+                    <option value="macho" {{ 'selected' if animal and animal.sexo == 'macho' }}>Macho</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Raza</label>
+                <input type="text" name="raza" value="{{ animal.raza if animal else '' }}" placeholder="Ej: Holstein">
+            </div>
+            <div class="form-group">
+                <label>Fecha de Nacimiento</label>
+                <input type="date" name="fecha_nacimiento" value="{{ animal.fecha_nacimiento.strftime('%Y-%m-%d') if animal and animal.fecha_nacimiento else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Madre</label>
+                <select name="madre_id">
+                    <option value="">-- Sin madre registrada --</option>
+                    {% for t in todos %}
+                    <option value="{{ t.id }}" {{ 'selected' if animal and animal.madre_id == t.id }}>{{ t.nombre }} ({{ t.numero or 'sin#' }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Padre</label>
+                <select name="padre_id">
+                    <option value="">-- Sin padre registrado --</option>
+                    {% for t in todos %}
+                    <option value="{{ t.id }}" {{ 'selected' if animal and animal.padre_id == t.id }}>{{ t.nombre }} ({{ t.numero or 'sin#' }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group full-width">
+                <label>Observaciones</label>
+                <textarea name="observaciones" rows="3" placeholder="Notas adicionales...">{{ animal.observaciones if animal else '' }}</textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 {{ 'Actualizar' if animal else 'Registrar' }}</button>
+            <a href="{{ url_for('ganado.index') }}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
