@@ -1,13 +1,22 @@
 from flask import Flask
 from werkzeug.security import generate_password_hash
 import os
+
+# Carga automática del archivo .env (si python-dotenv está instalado)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from extensions import db, login_manager
+from conf.settings import get_config
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'finca-secret-key-2024'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///finca.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # ── Configuración desde conf/settings.py (lee el .env) ──
+    app.config.from_object(get_config())
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -37,15 +46,18 @@ def create_app():
     return app
 
 def seed_admin():
-    from models import Usuario
-    if not Usuario.query.filter_by(username='admin').first():
-        admin = Usuario(
-            username='admin',
-            password=generate_password_hash('admin123'),
-            nombre='Administrador'
-        )
-        db.session.add(admin)
-        db.session.commit()
+    try:
+        from models import Usuario
+        if not Usuario.query.filter_by(username='admin').first():
+            admin = Usuario(  # type: ignore[call-arg]
+                username='admin',
+                password=generate_password_hash('admin123'),
+                nombre='Administrador'
+            )
+            db.session.add(admin)
+            db.session.commit()
+    except Exception as e:
+        print(f'[seed_admin] Advertencia: {e}')
 
 if __name__ == '__main__':
     app = create_app()

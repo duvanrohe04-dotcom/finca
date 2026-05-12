@@ -1,0 +1,35 @@
+# ============================================================
+#  .gitignore — Finca App
+# ============================================================
+
+# Variables de entorno (¡NUNCA subir al repo!)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Entorno virtual
+venv/
+env/
+.venv/
+
+# Base de datos local
+instance/
+*.db
+*.sqlite3
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

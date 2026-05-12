@@ -1,0 +1,31 @@
+# ============================================================
+#  Docker Compose — Finca App
+#  Compatible con Coolify (Docker Compose deployment)
+# ============================================================
+
+version: '3.9'
+
+services:
+  finca:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: finca_app
+    restart: unless-stopped
+    ports:
+      - "81:81"
+    env_file:
+      - .env                          # Variables de entorno
+    volumes:
+      - finca_db:/app/instance        # Persistencia de la base de datos SQLite
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:81')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+# ─── Volúmenes ────────────────────────────────────────────
+volumes:
+  finca_db:
+    driver: local

@@ -1,0 +1,34 @@
+# ============================================================
+#  .dockerignore — Finca App
+#  Excluye archivos innecesarios de la imagen Docker
+# ============================================================
+
+# Entorno virtual local
+venv/
+env/
+.venv/
+
+# Variables de entorno (se pasan por Coolify/env_file)
+.env
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Base de datos local (se usa el volumen Docker)
+instance/
+*.db
+*.sqlite3
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Editor
+.vscode/
+.idea/
+
+# Documentación
+README.md
