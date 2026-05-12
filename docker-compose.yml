@@ -13,7 +13,7 @@ services:
     container_name: finca_app
     restart: unless-stopped
     ports:
-      - "81:81"
+      - "3001:81"
     env_file:
       - .env                          # Variables de entorno
     volumes:

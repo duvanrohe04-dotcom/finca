@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory, make_response
 from werkzeug.security import generate_password_hash
 import os
 
@@ -38,6 +38,16 @@ def create_app():
     app.register_blueprint(leche_bp)
     app.register_blueprint(config_bp)
     app.register_blueprint(dashboard_bp)
+
+    @app.route('/favicon.ico')
+    def favicon():
+        resp = make_response(
+            send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+        )
+        resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+        return resp
 
     with app.app_context():
         db.create_all()
