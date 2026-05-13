@@ -1,3 +1,11 @@
+.mobile-only { display: none !important; }
+.desktop-only { display: block; }
+
+@media (max-width: 768px) {
+    .mobile-only { display: block !important; }
+    .desktop-only { display: none !important; }
+}
+
 :root {
     --bg: #f5f0e8;
     --surface: #fffdf7;
@@ -219,12 +227,27 @@ body {
 .sidebar-toggle:hover { background: var(--surface2); }
 .mobile-title {
     font-family: 'Playfair Display', serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text);
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+}
+.title-with-clock {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.brand-name-mini {
+    line-height: 1;
+}
+.live-clock {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: capitalize;
 }
 .mobile-logo {
     width: 26px;
@@ -238,9 +261,21 @@ body {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 90;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 95;
+    animation: fadeIn 0.3s ease;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+body.sidebar-open .sidebar-backdrop {
+    display: block;
+}
+
 .content-wrapper {
     padding: 28px 32px;
     max-width: 1200px;
@@ -704,105 +739,214 @@ body {
     width: 100%;
     max-width: 310px;
 }
-.login-card {
-    /* vidrio más transparente */
-    background: rgba(255,253,247,0.55);
-    border: 1px solid rgba(255,255,255,0.30);
+.login-key-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.login-key-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1) rotate(15deg);
+}
+
+.login-key-btn.active {
+    transform: scale(0.9) rotate(-45deg);
+    background: var(--accent);
+    border-color: var(--accent-light);
+}
+
+.login-card {
+    background: rgba(255,253,247,0.85);
+    border: 1px solid rgba(255,255,255,0.40);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
     padding: 28px 24px;
     width: 100%;
-    max-width: 310px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    max-width: 300px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
     position: relative;
     z-index: 2;
-    /* “Forma 3D” */
-    transform: translateY(-2px) rotateY(-10deg) rotateX(4deg);
-    transform-style: preserve-3d;
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-    overflow: hidden;
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.login-card:hover{
-    transform: translateY(-6px) rotateY(-6deg) rotateX(2deg);
-    box-shadow: 0 26px 85px rgba(0,0,0,0.48);
+
+.login-card.visible {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
-.login-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.12) 45%, rgba(0,0,0,0.05));
-    opacity: 0.30;
+
+.login-card:not(.visible) {
     pointer-events: none;
-    z-index: 0;
 }
-.login-card > * { position: relative; z-index: 1; }
-.login-brand { text-align: center; margin-bottom: 22px; }
+
+.login-brand { text-align: center; margin-bottom: 20px; }
 .login-logo {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
     object-fit: cover;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: 0 18px 38px rgba(0,0,0,0.25);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
-.login-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); }
-.login-subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
-.login-form { display: flex; flex-direction: column; gap: 18px; }
+.login-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--text); }
+.login-subtitle { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
+
+.login-form { display: flex; flex-direction: column; gap: 15px; }
 .login-form .form-group input {
     width: 100%;
-    padding: 12px 14px;
+    padding: 10px 14px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.5);
+    font-size: 14px;
     outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: all 0.2s;
 }
-.login-form .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(92,138,60,0.12); }
-.login-form .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+.login-form .form-group input:focus { 
+    border-color: var(--accent); 
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(92,138,60,0.15); 
+}
+
 .btn-login {
     background: var(--accent);
     color: #fff;
     border: none;
-    padding: 14px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
-    margin-top: 4px;
+    transition: all 0.2s;
 }
-.btn-login:hover { background: var(--accent-light); box-shadow: 0 4px 16px rgba(92,138,60,0.35); transform: translateY(-1px); }
-.login-hint { text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
+.btn-login:hover { 
+    background: var(--accent-light); 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(92,138,60,0.3); 
+}
 
+/* ─── MOBILE OPTIMIZATION ─── */
 @media (max-width: 768px) {
-    .mobile-topbar { display: flex; }
-
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.2s ease;
-        box-shadow: 16px 0 40px rgba(0,0,0,0.35);
-        z-index: 100;
+    .mobile-topbar { 
+        display: flex; 
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        z-index: 1000;
+        background: rgba(255, 253, 247, 0.98);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(0,0,0,0.08);
     }
-    .sidebar-backdrop { display: none; }
-    .sidebar-open .sidebar { transform: translateX(0); }
-    .sidebar-open .sidebar-backdrop { display: block; }
+
+    .topbar-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        width: 100%;
+    }
+
+    .sidebar { 
+        display: flex; 
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 280px;
+        background: #120e09;
+        z-index: 1000;
+        box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    }
+
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar-brand {
+        padding: 30px 20px;
+        background: rgba(255,255,255,0.03);
+    }
+
+    .nav-item {
+        padding: 14px 20px;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
 
     .main-content { margin-left: 0; }
-    .content-wrapper { padding: 16px; margin: 12px auto; width: calc(100% - 24px); }
-    .config-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .content-wrapper { padding: 20px 15px; margin: 0; width: 100%; }
 
-    /* Login: mantener la MISMA experiencia que PC (card al lado) */
-    .login-bg { justify-content: flex-end; padding: 18px; }
-    .login-scene { max-width: 340px; }
-    .login-card {
-        width: min(340px, 92vw);
-        max-width: 340px;
-        transform: translateY(-2px) rotateY(-8deg) rotateX(3deg);
+    /* Ocultar elementos en el panel de administrador en móvil */
+    .dashboard-grid, .stats-grid, .quick-grid, .stats-row, .page-header {
+        display: none !important;
     }
+
+    /* Ocultar barra inferior anterior */
+    .mobile-nav { display: none !important; }
 }
+
+/* Login Responsivo - Aún más pequeño */
+@media (max-width: 480px) {
+    .login-bg { 
+        justify-content: center; 
+        padding: 15px; 
+        background-position: center;
+    }
+    .login-scene { 
+        max-width: 260px; 
+    }
+    .login-card {
+        padding: 25px 22px;
+        max-width: 270px;
+        border-radius: 20px;
+        background: rgba(255,253,247,0.85);
+        backdrop-filter: blur(25px);
+    }
+    .login-form .form-group input {
+        padding: 14px 16px;
+        font-size: 16px; /* Evita zoom automático en iOS */
+    }
+    .btn-login {
+        padding: 15px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+    .login-logo { width: 45px; height: 45px; }
+    .login-title { font-size: 20px; }
+    .login-key-btn {
+        top: 15px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+
+}
+
+
+@media (max-width: 480px) { .login-topbar { position: fixed; top: 0; left: 0; right: 0; padding: 15px; display: flex; justify-content: flex-end; z-index: 500; } .login-clock { color: rgba(255,255,255,0.9); font-size: 11px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 20px; backdrop-filter: blur(5px); font-family: 'DM Sans', sans-serif; text-transform: capitalize; } }
+
+
+.login-body .live-clock { display: none !important; }
+

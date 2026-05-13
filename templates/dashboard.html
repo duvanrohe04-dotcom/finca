@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard – Finca Admin{% endblock %}
+{% block title %}Finca la Rosita{% endblock %}
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">Dashboard</h1>
@@ -51,24 +51,42 @@
     </div>
 </div>
 
-<div class="quick-links">
-    <h2 class="section-title">Acceso Rápido</h2>
-    <div class="quick-grid">
-        <a href="{{ url_for('ganado.nuevo') }}" class="quick-card">
-            <span>🐄</span> Registrar Animal
-        </a>
-        <a href="{{ url_for('obreros.nuevo') }}" class="quick-card">
-            <span>👷</span> Agregar Obrero
-        </a>
-        <a href="{{ url_for('leche.nuevo') }}" class="quick-card">
-            <span>🥛</span> Registro de Leche
-        </a>
-        <a href="{{ url_for('inventario.nuevo_bulto') }}" class="quick-card">
-            <span>📦</span> Agregar Bulto
-        </a>
-        <a href="{{ url_for('inventario.nueva_droga') }}" class="quick-card">
-            <span>💊</span> Agregar Medicamento
-        </a>
+    <div class="stats-row">
+        <div class="stat-card">
+            <span class="stat-icon">🐄</span>
+            <div class="stat-info">
+                <span class="stat-label">Total Ganado</span>
+                <span class="stat-value">{{ total_ganado }}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">👷</span>
+            <div class="stat-info">
+                <span class="stat-label">Obreros</span>
+                <span class="stat-value">{{ total_obreros }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-links">
+        <h2 class="section-title">Acceso Rápido</h2>
+        <div class="quick-grid">
+            <a href="{{ url_for('ganado.nuevo') }}" class="quick-card">
+                <span>🐄</span> Registrar Animal
+            </a>
+            <a href="{{ url_for('obreros.nuevo') }}" class="quick-card">
+                <span>👷</span> Agregar Obrero
+            </a>
+            <a href="{{ url_for('leche.nuevo') }}" class="quick-card">
+                <span>🥛</span> Registro de Leche
+            </a>
+            <a href="{{ url_for('inventario.nuevo_bulto') }}" class="quick-card">
+                <span>📦</span> Agregar Bulto
+            </a>
+            <a href="{{ url_for('inventario.nueva_droga') }}" class="quick-card">
+                <span>💊</span> Agregar Medicamento
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

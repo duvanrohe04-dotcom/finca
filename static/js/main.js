@@ -1,3 +1,24 @@
+// Clock logic for Colombia time
+function updateClock() {
+    const clockElement = document.getElementById('liveClock');
+    if (!clockElement) return;
+
+    const now = new Date();
+    // Colombia is UTC-5
+    const options = { 
+        timeZone: 'America/Bogota',
+        weekday: 'short', 
+        day: 'numeric', 
+        month: 'short', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true 
+    };
+    
+    clockElement.innerText = now.toLocaleString('es-CO', options);
+}
+
 // Tab switching
 function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -10,6 +31,9 @@ function showTab(tabId) {
 
 // Auto dismiss alerts after 4s
 document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    setInterval(updateClock, 1000);
+
     // PWA: registrar Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => { /* noop */ });
@@ -41,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             if (!deferredPrompt) {
-                alert('En PC: en Chrome/Edge busca el icono de “Instalar” en la barra de direcciones o en el menú (⋮) → “Instalar Finca Admin”.');
+                alert('En PC: en Chrome/Edge busca el icono de “Instalar” en la barra de direcciones o en el menú (⋮) → “Instalar Finca la Rosita”.');
                 return;
             }
             deferredPrompt.prompt();
