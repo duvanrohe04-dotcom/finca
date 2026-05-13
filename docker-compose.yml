@@ -13,8 +13,6 @@ services:
     environment:
       - FLASK_ENV=${FLASK_ENV:-production}
       - FLASK_APP=${FLASK_APP:-run.py}
-      - SECRET_KEY=${SECRET_KEY}
-      - DATABASE_URL=${DATABASE_URL}
     networks:
       - coolify
     restart: unless-stopped
