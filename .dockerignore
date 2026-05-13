@@ -8,8 +8,8 @@ venv/
 env/
 .venv/
 
-# Variables de entorno — NO excluir .env, necesario para Coolify
-# .env  # Se incluye en la imagen para que load_dotenv() funcione
+# Variables de entorno (se pasan por Coolify/env_file)
+.env
 
 # Cache de Python
 __pycache__/

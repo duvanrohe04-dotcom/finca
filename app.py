@@ -5,7 +5,7 @@ import os
 # Carga automática del archivo .env (si python-dotenv está instalado)
 try:
     from dotenv import load_dotenv
-    load_dotenv(override=True)
+    load_dotenv()
 except ImportError:
     pass
 
