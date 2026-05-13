@@ -20,6 +20,9 @@
     --radius: 10px;
     --shadow: 0 2px 12px rgba(44,36,22,0.10);
     --shadow-md: 0 4px 20px rgba(44,36,22,0.14);
+    --glass-bg: rgba(255, 253, 247, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.22);
+    --glass-shadow: 0 18px 60px rgba(0,0,0,0.22);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,12 +36,34 @@ body {
 }
 
 /* ─── LAYOUT ─── */
-.layout { display: flex; min-height: 100vh; }
+.admin-body { background: #0e0b07; }
+.app-bg {
+    position: fixed;
+    inset: 0;
+    background: url("../img/fondo.jpg") center/cover no-repeat;
+    z-index: 0;
+    pointer-events: none;
+    transform: scale(1.03);
+    filter: saturate(1.05) contrast(1.08);
+}
+.app-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,0.35), transparent 55%),
+        radial-gradient(circle at 80% 10%, rgba(0,0,0,0.30), transparent 60%),
+        linear-gradient(180deg, rgba(10,8,6,0.42), rgba(10,8,6,0.72));
+}
+
+.layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
 
 /* ─── SIDEBAR ─── */
 .sidebar {
     width: var(--sidebar-w);
-    background: var(--text);
+    background: rgba(18, 14, 9, 0.55);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255,255,255,0.10);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -54,7 +79,15 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-.brand-icon { font-size: 28px; }
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+    flex-shrink: 0;
+}
 .brand-name {
     font-family: 'Playfair Display', serif;
     font-size: 16px;
@@ -106,8 +139,186 @@ body {
     margin-left: var(--sidebar-w);
     flex: 1;
     min-height: 100vh;
+    background: transparent;
 }
-.content-wrapper { padding: 28px 32px; max-width: 1200px; }
+.mobile-topbar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    margin: 12px 12px 0;
+    border-radius: 14px;
+    background: rgba(245,240,232,0.88);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.18);
+    backdrop-filter: blur(6px);
+}
+.install-app-btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.10);
+    background: rgba(255,255,255,0.70);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    backdrop-filter: blur(8px);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    white-space: nowrap;
+}
+.install-app-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+}
+
+.install-app-fab{
+    display: none; /* (login) ya no se usa; lo dejamos oculto */
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 3;
+    padding: 12px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+}
+
+/* En PC (sidebar) lo ponemos con ancho completo */
+.pwa-install-desktop{
+    width: 100%;
+    margin-top: 12px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #f0ebe0;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+.pwa-install-desktop:hover{
+    box-shadow: 0 18px 60px rgba(0,0,0,0.32);
+}
+.install-app-fab:hover{ transform: translateY(-2px); }
+.sidebar-toggle {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+}
+.sidebar-toggle:hover { background: var(--surface2); }
+.mobile-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.mobile-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.10);
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 90;
+}
+.content-wrapper {
+    padding: 28px 32px;
+    max-width: 1200px;
+    width: calc(100% - 48px);
+    margin: 24px auto;
+    /* En admin: dejamos el contenido “encima” de la imagen (sin gran recuadro) */
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* ─── EFECTO VIDRIO / 3D (ADMIN) ─── */
+.admin-body .stat-card,
+.admin-body .quick-card,
+.admin-body .table-card,
+.admin-body .form-card,
+.admin-body .mini-stat,
+.admin-body .summary-bar {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+.admin-body .stat-card::before,
+.admin-body .quick-card::before,
+.admin-body .table-card::before,
+.admin-body .form-card::before,
+.admin-body .mini-stat::before,
+.admin-body .summary-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.08) 45%, rgba(0,0,0,0.03));
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+}
+.admin-body .stat-card > *,
+.admin-body .quick-card > *,
+.admin-body .table-card > *,
+.admin-body .form-card > *,
+.admin-body .mini-stat > *,
+.admin-body .summary-bar > * {
+    position: relative;
+    z-index: 1;
+}
+.admin-body .stat-card:hover,
+.admin-body .quick-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 26px 80px rgba(0,0,0,0.28);
+}
+.admin-body .table-card { box-shadow: 0 20px 70px rgba(0,0,0,0.20); }
+.admin-body .data-table thead th {
+    background: rgba(255,255,255,0.55);
+    border-bottom-color: rgba(0,0,0,0.08);
+}
+.admin-body .data-table tbody tr:hover { background: rgba(255,255,255,0.22); }
+/* Textos de cabecera legibles sobre la foto (solo admin) */
+.admin-body .page-title,
+.admin-body .section-title {
+    color: #f7f2e8;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.55);
+}
+.admin-body .page-date {
+    background: rgba(0,0,0,0.35);
+    color: #f7f2e8;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+}
+
+/* Tabs legibles en admin */
+.admin-body .tabs { border-bottom-color: rgba(255,255,255,0.22); }
+.admin-body .tab-btn { color: rgba(247,242,232,0.78); }
+.admin-body .tab-btn:hover { color: #ffffff; }
+.admin-body .tab-btn.active { color: #ffffff; border-bottom-color: rgba(255,255,255,0.9); }
 
 /* ─── PAGE HEADER ─── */
 .page-header {
@@ -460,31 +671,81 @@ body {
 .login-body { margin: 0; padding: 0; }
 .login-bg {
     min-height: 100vh;
-    background: linear-gradient(145deg, #2c2416 0%, #3d3420 40%, #4a3d28 70%, #2c2416 100%);
+    background: url("../img/fondo.jpg") center/cover no-repeat;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
+    /* Card al lado para ver más el fondo */
+    justify-content: flex-end;
+    padding: 28px 48px;
     position: relative;
     overflow: hidden;
 }
 .login-bg::before {
     content: '';
     position: absolute;
+    inset: -20px;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0,0,0,0.12), transparent 55%),
+        radial-gradient(circle at 85% 30%, rgba(0,0,0,0.18), transparent 60%),
+        linear-gradient(180deg, rgba(10,8,6,0.18), rgba(10,8,6,0.45));
+    z-index: 0;
+}
+.login-overlay {
+    position: absolute;
     inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    /* más claro para que se vea mejor la imagen */
+    background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.28) 60%, rgba(0,0,0,0.38) 100%);
+    z-index: 1;
+}
+.login-scene{
+    position: relative;
+    z-index: 2;
+    perspective: 1100px;
+    width: 100%;
+    max-width: 310px;
 }
 .login-card {
-    background: var(--surface);
+    /* vidrio más transparente */
+    background: rgba(255,253,247,0.55);
+    border: 1px solid rgba(255,255,255,0.30);
+    backdrop-filter: blur(10px);
     border-radius: 16px;
-    padding: 40px 36px;
+    padding: 28px 24px;
     width: 100%;
-    max-width: 400px;
+    max-width: 310px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     position: relative;
+    z-index: 2;
+    /* “Forma 3D” */
+    transform: translateY(-2px) rotateY(-10deg) rotateX(4deg);
+    transform-style: preserve-3d;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    overflow: hidden;
 }
-.login-brand { text-align: center; margin-bottom: 32px; }
-.login-icon { font-size: 48px; margin-bottom: 10px; }
+.login-card:hover{
+    transform: translateY(-6px) rotateY(-6deg) rotateX(2deg);
+    box-shadow: 0 26px 85px rgba(0,0,0,0.48);
+}
+.login-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.12) 45%, rgba(0,0,0,0.05));
+    opacity: 0.30;
+    pointer-events: none;
+    z-index: 0;
+}
+.login-card > * { position: relative; z-index: 1; }
+.login-brand { text-align: center; margin-bottom: 22px; }
+.login-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 18px 38px rgba(0,0,0,0.25);
+    margin-bottom: 12px;
+}
 .login-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); }
 .login-subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
 .login-form { display: flex; flex-direction: column; gap: 18px; }
@@ -519,9 +780,29 @@ body {
 .login-hint { text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); }
 
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
+    .mobile-topbar { display: flex; }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+        box-shadow: 16px 0 40px rgba(0,0,0,0.35);
+        z-index: 100;
+    }
+    .sidebar-backdrop { display: none; }
+    .sidebar-open .sidebar { transform: translateX(0); }
+    .sidebar-open .sidebar-backdrop { display: block; }
+
     .main-content { margin-left: 0; }
-    .content-wrapper { padding: 16px; }
+    .content-wrapper { padding: 16px; margin: 12px auto; width: calc(100% - 24px); }
     .config-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Login: mantener la MISMA experiencia que PC (card al lado) */
+    .login-bg { justify-content: flex-end; padding: 18px; }
+    .login-scene { max-width: 340px; }
+    .login-card {
+        width: min(340px, 92vw);
+        max-width: 340px;
+        transform: translateY(-2px) rotateY(-8deg) rotateX(3deg);
+    }
 }

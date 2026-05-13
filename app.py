@@ -49,6 +49,23 @@ def create_app():
         resp.headers['Expires'] = '0'
         return resp
 
+    # PWA (Service Worker y Manifest en la raíz para tener scope "/")
+    @app.route('/sw.js')
+    def sw():
+        resp = make_response(
+            send_from_directory(app.static_folder, 'sw.js', mimetype='application/javascript')
+        )
+        resp.headers['Cache-Control'] = 'no-cache'
+        return resp
+
+    @app.route('/manifest.webmanifest')
+    def manifest():
+        resp = make_response(
+            send_from_directory(app.static_folder, 'manifest.webmanifest', mimetype='application/manifest+json')
+        )
+        resp.headers['Cache-Control'] = 'no-cache'
+        return resp
+
     with app.app_context():
         db.create_all()
         seed_admin()

@@ -4,66 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Finca Admin{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <meta name="theme-color" content="#5c8a3c">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=3) }}">
 </head>
-<body>
+<body class="admin-body">
+    <!-- Fondo fotográfico (solo admin) -->
+    <div class="app-bg" aria-hidden="true"></div>
+
     <div class="layout">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-icon">🌿</span>
+                <img class="brand-logo" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo">
                 <div>
                     <div class="brand-name">Finca Admin</div>
-                    <div class="brand-sub">Panel de Control</div>
+                    <div class="brand-sub">Panel</div>
                 </div>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="{{ url_for('dashboard.index') }}" class="nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
-                    <span class="nav-icon">📊</span> Dashboard
+                <a href="{{ url_for('dashboard.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('dashboard') %}active{% endif %}">
+                    <span class="nav-icon">🏠</span> Dashboard
                 </a>
-                <a href="{{ url_for('ganado.index') }}" class="nav-item {% if 'ganado' in request.endpoint %}active{% endif %}">
-                    <span class="nav-icon">🐄</span> Ganado & Terneros
+                <a href="{{ url_for('ganado.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('ganado') %}active{% endif %}">
+                    <span class="nav-icon">🐄</span> Ganado
                 </a>
-                <a href="{{ url_for('obreros.index') }}" class="nav-item {% if 'obreros' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('obreros.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('obreros') %}active{% endif %}">
                     <span class="nav-icon">👷</span> Obreros
                 </a>
-                <a href="{{ url_for('inventario.index') }}" class="nav-item {% if 'inventario' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('inventario.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('inventario') %}active{% endif %}">
                     <span class="nav-icon">📦</span> Inventario
                 </a>
-                <a href="{{ url_for('leche.index') }}" class="nav-item {% if 'leche' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('leche.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('leche') %}active{% endif %}">
                     <span class="nav-icon">🥛</span> Leche
                 </a>
-                <div class="nav-divider"></div>
-                <a href="{{ url_for('config.index') }}" class="nav-item {% if 'config' in request.endpoint %}active{% endif %}">
+                <a href="{{ url_for('config.index') }}" class="nav-item {% if request.endpoint and request.endpoint.startswith('config') %}active{% endif %}">
                     <span class="nav-icon">⚙️</span> Configuración
                 </a>
+
+                <div class="nav-divider"></div>
+
                 <a href="{{ url_for('auth.logout') }}" class="nav-item nav-logout">
-                    <span class="nav-icon">🚪</span> Cerrar Sesión
+                    <span class="nav-icon">🚪</span> Cerrar sesión
                 </a>
             </nav>
+
             <div class="sidebar-footer">
                 <div class="user-info">
-                    <div class="user-avatar">{{ current_user.nombre[0].upper() }}</div>
+                    <div class="user-avatar">{{ (current_user.nombre or current_user.username or 'A')[:1].upper() }}</div>
                     <div>
-                        <div class="user-name">{{ current_user.nombre }}</div>
+                        <div class="user-name">{{ current_user.nombre or 'Administrador' }}</div>
                         <div class="user-role">Administrador</div>
                     </div>
                 </div>
+
+                <!-- Botón instalar (visible también en PC) -->
+                <button class="install-app-btn pwa-install pwa-install-desktop" type="button">⬇️ Instalar</button>
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Backdrop para móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
         <main class="main-content">
+            <!-- Barra superior solo en móvil -->
+            <header class="mobile-topbar">
+                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Abrir menú">
+                    ☰
+                </button>
+                <div class="mobile-title">
+                    <img class="mobile-logo" src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo">
+                    <span>Finca Admin</span>
+                </div>
+                <button class="install-app-btn pwa-install" type="button">⬇️ Instalar</button>
+            </header>
+
             <div class="content-wrapper">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                            <button onclick="this.parentElement.remove()">×</button>
-                        </div>
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
@@ -72,6 +95,7 @@
             </div>
         </main>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js', v=3) }}"></script>
 </body>
 </html>
