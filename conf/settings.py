@@ -9,7 +9,7 @@ import os
 class Config:
     """Configuración base (compartida entre todos los entornos)."""
     SECRET_KEY          = os.getenv('SECRET_KEY', 'finca-secret-key-2024')
-    SQLALCHEMY_DATABASE_URI      = os.getenv('DATABASE_URL', 'sqlite:///finca.db')
+    SQLALCHEMY_DATABASE_URI      = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

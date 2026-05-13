@@ -47,6 +47,7 @@
                 </form>
             </div>
         </div>
+        <div id="flashCheck" data-has-flash="{% if get_flashed_messages() %}1{% else %}0{% endif %}"></div>
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js', v=30) }}"></script>
@@ -58,10 +59,10 @@
         });
 
         // Mostrar por defecto si hay mensajes de error
-        {% if get_flashed_messages() %}
+        if (document.getElementById('flashCheck').dataset.hasFlash === '1') {
             document.getElementById('loginCard').classList.add('visible');
             document.getElementById('toggleLogin').classList.add('active');
-        {% endif %}
+        }
     </script>
 </body>
 </html>

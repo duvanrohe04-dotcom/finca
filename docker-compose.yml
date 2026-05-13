@@ -1,31 +1,23 @@
-# ============================================================
-#  Docker Compose — Finca App
-#  Compatible con Coolify (Docker Compose deployment)
-# ============================================================
-
-version: '3.9'
+version: '3.8'
 
 services:
-  finca:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  web:
+    build: .
     container_name: finca_app
-    restart: unless-stopped
-    ports:
-      - "3001:81"
-    env_file:
-      - .env                          # Variables de entorno
+    expose:
+      - "5001"
     volumes:
-      - finca_db:/app/instance        # Persistencia de la base de datos SQLite
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:81')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
+      - .:/app
+      - /app/.venv
+      - /app/__pycache__
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=run.py
+      - DATABASE_URL=postgresql+psycopg://admin:julyanna23@postgres-db:5432/master_db
+    networks:
+      - coolify
+    restart: unless-stopped
 
-# ─── Volúmenes ────────────────────────────────────────────
-volumes:
-  finca_db:
-    driver: local
+networks:
+  coolify:
+    external: true
